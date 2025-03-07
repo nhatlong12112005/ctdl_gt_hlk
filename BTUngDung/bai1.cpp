@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// Hàm kiểm tra số nguyên tố
+
 bool isPrime(int num) {
     if (num < 2) return false;
     for (int i = 2; i <= sqrt(num); i++) {
@@ -12,7 +12,7 @@ bool isPrime(int num) {
     return true;
 }
 
-// Hàm tính tổng các chữ số của một số
+
 int sumOfDigits(int num) {
     int sum = 0;
     while (num != 0) {
@@ -57,7 +57,7 @@ int removePrimes(int arr[], int n) {
     return newSize;
 }
 
-// Hàm in mảng
+
 void printArray(int arr[], int n) {
     for (int i = 0; i < n; i++) {
         cout << arr[i] << " ";
@@ -69,16 +69,15 @@ int main() {
     int arr[] = {39, 8, 5, 1, 3, 6, 9, 12, 4, 7, 10};
     int n = sizeof(arr) / sizeof(arr[0]);
 
-    // 1. Tìm vị trí phần tử lớn nhất
+   
     int maxPos = findMaxPosition(arr, n);
     cout << "Vi tri cua phan tu lon nhat: " << maxPos << endl;
 
-    // 2. Sắp xếp theo tổng chữ số
+    
     sortByDigitSum(arr, n);
     cout << "Sap xep theo tong cac chu so: ";
     printArray(arr, n);
 
-    // 3. Xóa các số nguyên tố
     n = removePrimes(arr, n);
     cout << "Mang sau khi xoa cac so nguyen to: ";
     printArray(arr, n);
