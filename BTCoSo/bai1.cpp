@@ -1,96 +1,105 @@
-#include <iostream>
-#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 
-using namespace std;
+#define MAX_SIZE 100
 
-const int MAX_SIZE = 100;
 
-// Đọc dữ liệu từ file
-void readData(const string& filename, int arr[], int &n) {
-    ifstream file(filename);
-    n = 0;
-    while (file >> arr[n]) {
-        n++;
+void docFile(const char *tenTep, int a[], int *n) {
+    FILE *file = fopen(tenTep, "r");
+    if (!file) {
+        printf("Không thể mở file %s\n", tenTep);
+        exit(1);
     }
-    file.close();
+    *n = 0;
+    while (fscanf(file, "%d", &a[*n]) == 1) (*n)++;
+    fclose(file);
 }
 
-// Ghi kết quả vào file
-void writeResult(const string& filename, const string& algorithm, int arr[], int n) {
-    ofstream file(filename, ios::app);
-    file << algorithm << ":\n";
-    for (int i = 0; i < n; i++) {
-        file << arr[i] << " ";
+void ghiFile(const char *tenTep, const char *tenThuatToan, int a[], int n) {
+    FILE *file = fopen(tenTep, "w");
+    if (!file) {
+        printf("Không thể mở file %s\n", tenTep);
+        exit(1);
     }
-    file << "\n\n";
-    file.close();
+    fprintf(file, "%s:\n", tenThuatToan);
+    for (int i = 0; i < n; i++) fprintf(file, "%d ", a[i]);
+    fprintf(file, "\n");
+    fclose(file);
 }
 
-// Sắp xếp đổi chỗ trực tiếp
-void interchangeSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (arr[i] > arr[j]) {
-                swap(arr[i], arr[j]);
-            }
-        }
-    }
+void swap(int &a,int &b){
+    int temp = a;
+    a = b;
+    b = temp;
 }
 
-// Sắp xếp chọn trực tiếp
-void selectionSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        int minIdx = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIdx]) {
-                minIdx = j;
-            }
-        }
-        swap(arr[i], arr[minIdx]);
-    }
-}
-
-// Sắp xếp chèn trực tiếp
-void insertionSort(int arr[], int n) {
+void Insertion(int a[], int n) {
     for (int i = 1; i < n; i++) {
-        int key = arr[i];
         int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+        int x = a[i];
+        bool cont = true;
+        while ((j >= 0) && cont) {
+            if (a[j] > x) {
+                a[j + 1] = a[j];
+                j--;
+            } else {
+                cont = false;
+            }
         }
-        arr[j + 1] = key;
+        a[j + 1] = x;
     }
 }
 
-// Sắp xếp nổi bọt
-void bubbleSort(int arr[], int n) {
+void Interchange(int a[], int n) {
     for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                swap(arr[j], arr[j + 1]);
+        for (int j = i + 1; j < n; j++) {
+            if (a[i] > a[j]) {
+                swap(a[i], a[j]);
             }
         }
+    }
+}
+
+void BubbleSort(int a[], int n) {
+    int i, j;
+    for (i = n - 1; i >= 1; i--) {  
+        for (j = 0; j <= i - 1; j++) {  
+            if (a[j] > a[j + 1]) {  
+                swap(a[j], a[j + 1]);  
+            }
+        }
+    }
+}
+void Selection(int a[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        
+        int minval = a[i];
+        int kmin = i;
+        for (int j = i + 1; j < n; j++) {
+            if (minval > a[j]) {
+                minval = a[j];
+                kmin = j;
+            }
+        }
+        
+        swap(a[i], a[kmin]);
     }
 }
 
 int main() {
-    string inputFile = "input.txt";
-    string outputFile = "output.txt";
-    
-    ofstream clearFile(outputFile, ios::trunc); // Xóa dữ liệu cũ
-    clearFile.close();
+    const char *input = "input.txt";
+    const char *output = "output.txt";
 
-    int arr[MAX_SIZE], n;
-
-    void (*algorithms[])(int[], int) = {interchangeSort, selectionSort, insertionSort, bubbleSort};
-    string algorithmNames[] = {"Interchange Sort", "Selection Sort", "Insertion Sort", "Bubble Sort"};
-
-    for (int i = 0; i < 4; i++) {
-        readData(inputFile, arr, n);
-        algorithms[i](arr, n);
-        writeResult(outputFile, algorithmNames[i], arr, n);
-    }
+    int a[MAX_SIZE], n;
+    docFile(input, a, &n);      
+    Insertion(a, n);            
+    ghiFile(output, "sap xep chen", a, n);  
+    Interchange(a,n);
+    ghiFile(output,"sap xep doi cho truc tiep",a,n);
+    BubbleSort(a,n);
+    ghiFile(output,"sap xep noi bot",a,n);
+    Selection(a,n);
+    ghiFile(output,"sap xep chon",a,n);
 
     return 0;
 }
